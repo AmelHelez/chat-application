@@ -1,0 +1,33 @@
+<div class="register-container">
+  <h2>Login</h2>
+  <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+    <div>
+      <label for="username">Username</label>
+      <input id="username" formControlName="username" required />
+      <div *ngIf="username.touched && username.invalid">
+        <small *ngIf="username?.errors?.required">Username is required.</small>
+        <small *ngIf="username?.errors?.minlength"
+          >Username must be at least 3 characters long.</small
+        >
+      </div>
+    </div>
+
+    <div>
+      <label for="password">Password</label>
+      <input
+        type="password"
+        id="password"
+        formControlName="password"
+        required
+      />
+      <div *ngIf="password.touched && password.invalid">
+        <small *ngIf="password.errors?.required">Password is required.</small>
+        <small *ngIf="password.errors?.minlength"
+          >Password must be at least 6 characters long.</small
+        >
+      </div>
+    </div>
+
+    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+  </form>
+</div>
