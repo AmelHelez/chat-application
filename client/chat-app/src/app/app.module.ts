@@ -8,20 +8,23 @@ import { UserRegistrationComponent } from './components/user-registration/user-r
 import { ReactiveFormsModule } from '@angular/forms';
 import { UserLoginComponent } from './components/user-login/user-login.component';
 import { HttpClientModule } from '@angular/common/http';
+import { DashboardComponent } from './components/dashboard/dashboard.component';
+import { httpInterceptorProviders } from './helpers/http.interceptor';
 
 @NgModule({
   declarations: [
     AppComponent,
     UserRegistrationComponent,
-    UserLoginComponent
+    UserLoginComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
   ],
-  providers: [SocketIoService],
-  bootstrap: [AppComponent]
+  providers: [SocketIoService, httpInterceptorProviders],
+  bootstrap: [AppComponent],
 })
-export class AppModule { }
+export class AppModule {}
