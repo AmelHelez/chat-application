@@ -1,3 +1,4 @@
+require("dotenv").config();
 const app = require("express")();
 const http = require("http").createServer(app);
 const cors = require("cors");
@@ -9,141 +10,86 @@ const io = require("socket.io")(http, {
     origins: ["https://localhost:4200"],
   },
 });
+const jwtoken = require("jsonwebtoken");
+var { expressjwt: jwt } = require("express-jwt");
+
 app.use(
   cors({
     origin: true,
     credentials: true,
-    methods: "POST,GET,PUT,OPTIONS,DELETE"
+    methods: "POST,GET,PUT,OPTIONS,DELETE",
   })
 );
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const client = createClient();
-client.on("error", (err) => console.log("Redis not started.."));
-console.log("Connected");
-client.connect();
+let client = null;
+async function connect() {
+  client = await createClient()
+    .on("error", (err) => console.log("Redis Client Error", err))
+    .connect();
+}
 
-// const users = {};
+connect();
 
 app.post("/register", async (req, res) => {
   const { username, password } = req.body;
   const saltRounds = 10;
   const hashedPassword = await bcrypt.hash(password, saltRounds);
-  // console.log("Hashed: ", hashedPassword);
-  client.hSet(
-    `user:${username}`,
-    {
-      username: username,
-      password: hashedPassword,
-    },
-    (err, res) => {
-      if (err) {
-        console.error("Error storing user in Redis:", err);
-        return res.status(400).json({ message: "Cannot create user" });
-      } else {
-        console.log(`User ${username} stored successfully!`);
-        return res.status(200).json({ message: "User registered successfully" });
-      }
-    }
-  );
+  const userExists = await client.hGetAll(`user:${username}`);
+  if (JSON.stringify(userExists) != "{}") {
+    return res.status(500).send({ message: "Username already exists" });
+  }
+
+  await client.hSet(`user:${username}`, {
+    username: username,
+    password: hashedPassword,
+  });
+
+  return res.status(200).send({ message: "User registered successfully!" });
 });
 
-app.post("/login", (req, res) => {
+app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  try {
-    verifyUser(username, password, (err, authenticated) => {
-      console.log("ERR: ", err);
-      console.log("Authenticated: ", authenticated);
-      if (err) throw err;
-      if (authenticated) {
-        console.log("User login successful");
-      } else {
-        console.log("User login failed");
-      }
-    });
-  } catch (e) {
-    console.log("Error");
+  const user = await client.hGetAll(`user:${username}`);
+  if (JSON.stringify(user) == "{}") {
+    return res.status(500).send({ message: "User not found" });
   }
-  // const user = users[username];
-  // checkPassword(password, saltRounds);
-  // if (!user || user.password !== password) {
-  //   return res.status(400).json({ message: "Invalid credentials" });
-  // }
-  // req.session.username = username;
-  // res.status(200).json({ message: "User logged in successfully" });
-});
 
-function checkPassword(password, saltRounds) {
-  bcrypt
-    .hash(password, saltRounds)
-    .then((hash) => {
-      userHash = hash;
-      console.log("Hash ", hash);
-      validateUser(hash);
-    })
-    .catch((err) => console.error(err.message));
-
-  function validateUser(hash) {
-    bcrypt
-      .compare(password, hash)
-      .then((res) => {
-        console.log("They are correct!");
-        console.log(res); // return true
-      })
-      .catch((err) => console.error(err.message));
-  }
-}
-
-function verifyUser(username, password, callback) {
-  client.hGetAll(`user:${username}`, (err, user) => {
-    console.log("GET ALL");
+  bcrypt.compare(password, user.password, (err, result) => {
     if (err) {
-      console.error("Error retrieving user from Redis:", err);
-      callback(err, null);
-      return;
+      return res.status(500).send("Error comparing passwords:");
     }
 
-    if (!user) {
-      console.log("User not found");
-      callback(null, false);
-      return;
+    if (!result) {
+      return res.status(401).send("Invalid password");
     }
 
-    bcrypt.compare(password, user.password, (err, result) => {
-      if (err) {
-        console.error("Error comparing passwords:", err);
-        callback(err, null);
-        return;
-      }
+    const token = jwtoken.sign({}, process.env.JWT_SECRET, {
+      algorithm: "HS256",
+      expiresIn: 3600,
+      subject: user.username,
+    });
 
-      if (result) {
-        console.log("User authenticated successfully");
-        callback(null, true);
-      } else {
-        console.log("Password incorrect");
-        callback(null, false);
-      }
+    res.status(200).json({
+      token: { idToken: token, expiresIn: 3600 },
+      user: user.username,
     });
   });
-}
-
-app.get("/", (req, res) => {
-  res.send("<h1>Hey Socket.io</h1>");
 });
+
+app.get(
+  "/",
+  jwt({ secret: process.env.JWT_SECRET, algorithms: ["HS256"] }),
+  async function (req, res) {
+    res.status(200).json({ message: "You are now on the home page." });
+  }
+);
 
 io.on("connection", (socket) => {
-  // let token = socket.handshake.auth.token;
   console.log("a user connected");
-  socket.on("disconnect", () => {
-    console.log("user disconnected");
-  });
-
-  socket.on("my message", (msg) => {
-    io.emit("my broadcast", `server: ${msg}`);
-  });
 });
 
-http.listen(3000, () => {
-  console.log("listening on port 3000");
+http.listen(process.env.PORT || 3000, () => {
+  console.log("listening on port", process.env.PORT);
 });

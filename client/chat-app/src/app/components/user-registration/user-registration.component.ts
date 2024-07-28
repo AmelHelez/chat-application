@@ -31,6 +31,7 @@ export class UserRegistrationComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
+    if (this.authService.isLoggedIn()) this.router.navigate(['/']);
     this.registerForm = this.fb.group(
       {
         username: ['', [Validators.required, Validators.minLength(3)]],

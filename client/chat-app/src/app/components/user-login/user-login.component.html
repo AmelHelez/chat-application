@@ -1,6 +1,6 @@
-<div class="register-container">
+<div class="login-container">
   <h2>Login</h2>
-  <form (ngSubmit)="onSubmit()" [formGroup]="registerForm">
+  <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
     <div>
       <label for="username">Username</label>
       <input id="username" formControlName="username" required />
@@ -28,6 +28,6 @@
       </div>
     </div>
 
-    <button type="submit" [disabled]="registerForm.invalid">Register</button>
+    <button type="submit" [disabled]="loginForm.invalid">Login</button>
   </form>
 </div>
