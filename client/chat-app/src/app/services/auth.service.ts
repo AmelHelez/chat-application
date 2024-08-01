@@ -6,14 +6,20 @@ import { Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { SocketIoService } from './socketio.service';
 
 const httpOptions = {
   headers: new HttpHeaders({ 'Content-Type': 'application/json' }),
 };
+const USER_KEY = environment.USER_KEY;
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private socketService: SocketIoService
+  ) {}
 
   register(user: User): Observable<any> {
     return this.http.post(
@@ -39,6 +45,8 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('id_token');
     localStorage.removeItem('expires_at');
+    const user = window.sessionStorage.getItem(USER_KEY);
+    if(user) this.socketService.logout(user);
     this.router.navigate(['/login']);
   }
 
@@ -55,5 +63,9 @@ export class AuthService {
     const expiresAt = JSON.parse(expiration!);
 
     return moment(expiresAt);
+  }
+
+  getUsers(): any {
+    return this.http.get<any>(`${environment.SOCKET_ENDPOINT}/`);
   }
 }

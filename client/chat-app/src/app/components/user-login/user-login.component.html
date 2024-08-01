@@ -27,7 +27,12 @@
         >
       </div>
     </div>
-
-    <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    <div class="actions">
+      <span
+        >Don't have an account? You can join by
+        <a routerLink="/register">registering.</a></span
+      >
+      <button type="submit" [disabled]="loginForm.invalid">Login</button>
+    </div>
   </form>
 </div>

@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import {
   AbstractControl,
   FormBuilder,
@@ -11,6 +11,7 @@ import {
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user-registration',
@@ -27,7 +28,8 @@ export class UserRegistrationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -63,7 +65,9 @@ export class UserRegistrationComponent implements OnInit {
       userData.username = this.registerForm.value.username;
       userData.password = this.registerForm.value.password;
       this.authService.register(userData).subscribe((response) => {
-        console.log('User registered:', response);
+        this.snackBar.open(response.message, 'Close', {
+          duration: 3000,
+        });
         this.router.navigate(['/login']);
       });
     }
