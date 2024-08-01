@@ -1,0 +1,114 @@
+.chat-app-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+
+  mat-toolbar {
+    flex-shrink: 0;
+    justify-content: space-between;
+  }
+
+  .chat-app-body {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+
+    .chat-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+
+      .chat-header {
+        padding: 16px;
+        border-bottom: 1px solid #ddd;
+      }
+
+      .chat-messages {
+        flex: 1;
+        padding: 16px;
+        overflow-y: auto;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+
+        .chat-message {
+          max-width: 70%;
+          padding: 10px;
+          border-radius: 8px;
+          background-color: #fff;
+          box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+          word-wrap: break-word;
+
+          &.sent {
+            align-self: flex-end;
+            background-color: #dcf8c6;
+          }
+
+          &.received {
+            align-self: flex-start;
+            background-color: #fff;
+          }
+
+          .message-content {
+            display: flex;
+            flex-direction: column;
+
+            .sender {
+              display: flex;
+
+              .sender-name {
+                font-weight: 600;
+                color: #3f51b5;
+              }
+
+              .online-status {
+                width: 10px;
+                height: 10px;
+                border-radius: 50%;
+                background-color: green;
+                border: 2px solid white;
+                box-shadow: 0 0 2px rgba(0, 0, 0, 0.2);
+              }
+            }
+
+            div {
+              display: flex;
+
+              .message-timestamp {
+                align-self: flex-end;
+                font-size: 0.75rem;
+                color: #888;
+                margin-top: 4px;
+              }
+            }
+          }
+        }
+      }
+
+      .chat-input {
+        padding: 16px;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+        display: flex;
+        align-items: center;
+
+        form {
+          display: flex;
+          width: 100%;
+          align-items: center;
+
+          .input-field {
+            flex: 1;
+            margin-right: 8px;
+          }
+
+          button {
+            flex-shrink: 0;
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,1 +1,64 @@
-<p>home page</p>
+<div class="chat-app-container">
+  <app-toolbar (onLogout)="logout()"></app-toolbar>
+
+  <div class="chat-app-body">
+    <app-chat-list
+      *ngIf="!isLoading && user"
+      [user]="user"
+      [privateUsers]="allPrivateUsers"
+      [users]="allUsers"
+    ></app-chat-list>
+
+    <div class="chat-content" *ngIf="selectedChat">
+      <div class="chat-header">
+        <h2>{{ selectedChat.name }}</h2>
+      </div>
+      <div class="chat-messages" id="chatMessages">
+        <div
+          class="chat-message"
+          [ngClass]="{
+            sent: message.sender == user.username,
+            received: message.sender != user.username
+          }"
+          *ngFor="let message of selectedChat?.messages"
+        >
+          <div class="message-content">
+            <div class="sender">
+              <span class="sender-name">{{ message.sender }} </span>
+              <span
+                class="online-status"
+                *ngIf="activeUsers.includes(message.sender)"
+              ></span>
+            </div>
+            <div>
+              <p>{{ message.message }}</p>
+              <span class="message-timestamp">{{
+                message.timestamp | date : "HH:mm"
+              }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="chat-input">
+        <form (submit)="sendMessage()" autocomplete="off">
+          <mat-form-field class="input-field">
+            <input
+              matInput
+              [(ngModel)]="userMessage"
+              placeholder="Type a message"
+              name="user-message"
+            />
+          </mat-form-field>
+          <button
+            mat-icon-button
+            color="primary"
+            type="submit"
+            [disabled]="userMessage.length === 0"
+          >
+            <mat-icon>send</mat-icon>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

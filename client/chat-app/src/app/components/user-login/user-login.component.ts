@@ -8,7 +8,9 @@ import {
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
+import { SocketIoService } from 'src/app/services/socketio.service';
 import { StorageService } from 'src/app/services/storage.service';
+import { MatSnackBar } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-user-login',
@@ -25,7 +27,9 @@ export class UserLoginComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private storageService: StorageService,
-    private router: Router
+    private router: Router,
+    private socketService: SocketIoService,
+    private snackBar: MatSnackBar
   ) {}
 
   ngOnInit(): void {
@@ -44,11 +48,16 @@ export class UserLoginComponent implements OnInit {
       this.authService.login(userData).subscribe({
         next: (response: any) => {
           this.storageService.saveUser(response.user);
-          console.log('User logged in successfully:', response);
+          this.snackBar.open('User logged in successfully!', 'Close', {
+            duration: 3000,
+          });
+          this.socketService.login(response.user);
           this.router.navigate(['/']);
         },
         error: (error) => {
-          console.error(error);
+          this.snackBar.open(error.error.message, 'Close', {
+            duration: 3000,
+          });
         },
       });
     }

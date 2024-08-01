@@ -1,0 +1,74 @@
+<div class="chat-list">
+  <div class="chat-list-header">
+    <h2>{{ user.username }}</h2>
+    <div class="user-actions">
+      <button
+        *ngIf="!showUsers"
+        mat-icon-button
+        (click)="prepareForPrivateChat()"
+        matTooltip="New private chat"
+      >
+        <mat-icon>add_comment</mat-icon>
+      </button>
+      <button
+        *ngIf="!showUsers"
+        mat-icon-button
+        matTooltip="New group chat"
+        (click)="prepareForGroupChat()"
+      >
+        <mat-icon>group_add</mat-icon>
+      </button>
+      <button
+        *ngIf="showUsers"
+        mat-icon-button
+        matTooltip="Close"
+        (click)="closePreparation()"
+      >
+        <mat-icon>close</mat-icon>
+      </button>
+    </div>
+  </div>
+  <mat-nav-list *ngIf="!showUsers; else elseTemplate">
+    <a
+      mat-list-item
+      *ngFor="let room of user.rooms"
+      (click)="selectChat(room.id)"
+    >
+      <mat-icon matListIcon>account_circle</mat-icon>
+      <h4 matLine>{{ room.title }}</h4>
+    </a>
+  </mat-nav-list>
+  <ng-template #elseTemplate>
+    <mat-nav-list
+      *ngIf="chatType === chatTypes.Private; else groupChatTemplate"
+    >
+      <a
+        mat-list-item
+        *ngFor="let user of privateUsers"
+        (click)="selectUser(user.username)"
+      >
+        <h4 matLine>{{ user.username }}</h4>
+      </a>
+    </mat-nav-list>
+  </ng-template>
+  <ng-template #groupChatTemplate>
+    <mat-nav-list>
+      <mat-list-item
+        *ngFor="let user of users"
+        (click)="toggleSelection(user.username)"
+        [class.selected]="isSelected(user.username)"
+      >
+        <mat-icon matListIcon>check_circle</mat-icon>
+        <h4 matLine>{{ user.username }}</h4>
+        <mat-divider></mat-divider>
+      </mat-list-item>
+    </mat-nav-list>
+    <button
+      mat-stroked-button
+      [disabled]="selectedItems.length === 0"
+      (click)="addNewGroup()"
+    >
+      Create Group
+    </button>
+  </ng-template>
+</div>
