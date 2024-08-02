@@ -9,7 +9,6 @@ yarn-error.log
 
 # Ignore editor and OS specific files
 .DS_Store
-.env
 *.md
 .git
 .gitignore
