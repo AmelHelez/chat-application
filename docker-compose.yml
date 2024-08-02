@@ -1,0 +1,39 @@
+version: '3.8'
+
+services:
+  client:
+    build:
+      context: ./client/chat-app
+      dockerfile: dockerfile
+    ports:
+      - "4200:80"
+    depends_on:
+      - server
+    container_name: client-container
+
+  server:
+    build:
+      context: ./server
+      dockerfile: dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      - redis
+    environment:
+      PORT: 3000
+      JWT_SECRET: b8a7cf23-17c8-4eb8-a25c-f5712e57134a
+      REDIS_URL: redis://redis:6379
+    container_name: server-container
+
+  redis:
+    image: redis/redis-stack-server:7.2.0-v6
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: [ "CMD", "redis-cli", "--raw", "incr", "ping" ]
+    volumes:
+      - redis_data:/data
+    container_name: redis-container
+
+volumes:
+  redis_data:
