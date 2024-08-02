@@ -5,9 +5,10 @@ const cors = require("cors");
 const bodyParser = require("body-parser");
 const bcrypt = require("bcrypt");
 const { createClient } = require("redis");
+
 const io = require("socket.io")(http, {
   cors: {
-    origins: ["https://localhost:4200"],
+    origins: process.env.CORS_ORIGINS || "http://localhost:4200",
   },
 });
 const jwtoken = require("jsonwebtoken");
