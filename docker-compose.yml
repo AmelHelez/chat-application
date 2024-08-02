@@ -4,7 +4,7 @@ services:
   client:
     build:
       context: ./client/chat-app
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - "4200:80"
     depends_on:
@@ -14,7 +14,7 @@ services:
   server:
     build:
       context: ./server
-      dockerfile: dockerfile
+      dockerfile: Dockerfile
     ports:
       - "3000:3000"
     depends_on:

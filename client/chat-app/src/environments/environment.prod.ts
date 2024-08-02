@@ -1,5 +1,5 @@
 export const environment = {
   production: true,
-  SOCKET_ENDPOINT: 'https://hulkapps-project.herokuapp.com',
+  SOCKET_ENDPOINT: 'http://localhost:3000',
   USER_KEY: 'auth-user',
 };
