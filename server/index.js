@@ -26,9 +26,12 @@ let client = null;
 
 const MESSAGE_LIMIT = 20;
 const LIMIT_DURATION = 60;
+const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 
 async function connect() {
-  client = await createClient()
+  client = await createClient({
+    url: redisUrl,
+  })
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
 }
