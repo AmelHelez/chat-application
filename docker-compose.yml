@@ -9,6 +9,8 @@ services:
       - "4200:80"
     depends_on:
       - server
+    environment:
+      SOCKET_ENDPOINT: ${SOCKET_ENDPOINT}
     container_name: client-container
 
   server:
