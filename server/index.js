@@ -8,16 +8,16 @@ const { createClient } = require("redis");
 
 const io = require("socket.io")(http, {
   cors: {
-    origins: process.env.CORS_ORIGINS || "http://localhost:4200",
+    origin: "https://chatapp-29de5.web.app",
   },
 });
 const jwtoken = require("jsonwebtoken");
 var { expressjwt: jwt } = require("express-jwt");
 app.use(
   cors({
-    origin: true,
-    credentials: true,
-    methods: "POST,GET,PUT,OPTIONS,DELETE",
+    origin: "https://chatapp-29de5.web.app",
+    allowedHeaders: ["Content-Type", "Authorization"],
+    methods: ["GET", "POST", "PUT", "DELETE"],
   })
 );
 app.use(bodyParser.json());
@@ -27,11 +27,14 @@ let client = null;
 
 const MESSAGE_LIMIT = 20;
 const LIMIT_DURATION = 60;
-const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
 
 async function connect() {
   client = await createClient({
-    url: redisUrl,
+    password: "GjtK5Yrht9Eo6Lk2iFpioLVknuyMrosu",
+    socket: {
+      host: "redis-10306.c328.europe-west3-1.gce.redns.redis-cloud.com",
+      port: 10306,
+    },
   })
     .on("error", (err) => console.log("Redis Client Error", err))
     .connect();
