@@ -1,8 +1,4 @@
+@import "node_modules/angular-notifier/styles";
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
-
-app-root {
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}

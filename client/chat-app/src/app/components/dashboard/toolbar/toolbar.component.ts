@@ -1,4 +1,5 @@
 import { Component, EventEmitter, Output } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
 
 @Component({
   selector: 'app-toolbar',
@@ -8,7 +9,13 @@ import { Component, EventEmitter, Output } from '@angular/core';
 export class ToolbarComponent {
   @Output() onLogout = new EventEmitter<void>();
 
+  constructor(private readonly authService: AuthService) {}
+
   logout(): void {
     this.onLogout.emit();
+  }
+
+  get isLoggedIn(): boolean {
+    return this.authService.isLoggedIn();
   }
 }

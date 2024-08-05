@@ -286,6 +286,8 @@ io.on("connection", async (socket) => {
         roomName,
         roomTitleNotify
       );
+
+      io.to(us.socket).emit("active-user", roomCreator);
     });
   });
 

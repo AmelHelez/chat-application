@@ -1,38 +1,42 @@
-<div class="login-container">
-  <h2>Login</h2>
-  <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
-    <div>
-      <label for="username">Username</label>
-      <input id="username" formControlName="username" required />
-      <div *ngIf="username.touched && username.invalid">
-        <small *ngIf="username?.errors?.required">Username is required.</small>
-        <small *ngIf="username?.errors?.minlength"
-          >Username must be at least 3 characters long.</small
-        >
+<div id="action">
+  <div class="container">
+    <h2>Login</h2>
+    <form (ngSubmit)="onSubmit()" [formGroup]="loginForm">
+      <div>
+        <label for="username">Username</label>
+        <input id="username" formControlName="username" required />
+        <div *ngIf="username.touched && username.invalid">
+          <small *ngIf="username?.errors?.required"
+            >Username is required.</small
+          >
+          <small *ngIf="username?.errors?.minlength"
+            >Username must be at least 3 characters long.</small
+          >
+        </div>
       </div>
-    </div>
 
-    <div>
-      <label for="password">Password</label>
-      <input
-        type="password"
-        id="password"
-        formControlName="password"
-        required
-      />
-      <div *ngIf="password.touched && password.invalid">
-        <small *ngIf="password.errors?.required">Password is required.</small>
-        <small *ngIf="password.errors?.minlength"
-          >Password must be at least 6 characters long.</small
-        >
+      <div>
+        <label for="password">Password</label>
+        <input
+          type="password"
+          id="password"
+          formControlName="password"
+          required
+        />
+        <div *ngIf="password.touched && password.invalid">
+          <small *ngIf="password.errors?.required">Password is required.</small>
+          <small *ngIf="password.errors?.minlength"
+            >Password must be at least 6 characters long.</small
+          >
+        </div>
       </div>
-    </div>
-    <div class="actions">
-      <span
-        >Don't have an account? You can join by
-        <a routerLink="/register">registering.</a></span
-      >
-      <button type="submit" [disabled]="loginForm.invalid">Login</button>
-    </div>
-  </form>
+      <div class="actions">
+        <span
+          >Don't have an account?
+          <a routerLink="/register">Register.</a></span
+        >
+        <button type="submit" [disabled]="loginForm.invalid">Login</button>
+      </div>
+    </form>
+  </div>
 </div>

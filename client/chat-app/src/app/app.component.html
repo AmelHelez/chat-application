@@ -1,3 +1,5 @@
-<div class="full-height">
+<div class="chat-app-container">
+  <app-toolbar (onLogout)="logout()"></app-toolbar>
   <router-outlet></router-outlet>
+  <notifier-container></notifier-container>
 </div>

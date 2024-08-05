@@ -10,12 +10,12 @@ import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
 import { SocketIoService } from 'src/app/services/socketio.service';
 import { StorageService } from 'src/app/services/storage.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-user-login',
   templateUrl: './user-login.component.html',
-  styleUrls: ['./user-login.component.scss'],
+  styleUrls: ['../form.scss'],
 })
 export class UserLoginComponent implements OnInit {
   loginForm = new FormGroup({
@@ -29,7 +29,7 @@ export class UserLoginComponent implements OnInit {
     private storageService: StorageService,
     private router: Router,
     private socketService: SocketIoService,
-    private snackBar: MatSnackBar
+    private readonly notifier: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -48,16 +48,12 @@ export class UserLoginComponent implements OnInit {
       this.authService.login(userData).subscribe({
         next: (response: any) => {
           this.storageService.saveUser(response.user);
-          this.snackBar.open('User logged in successfully!', 'Close', {
-            duration: 3000,
-          });
+          this.notifier.notify('success', 'User logged in successfully!');
           this.socketService.login(response.user);
           this.router.navigate(['/']);
         },
         error: (error) => {
-          this.snackBar.open(error.error.message, 'Close', {
-            duration: 3000,
-          });
+          this.notifier.notify('error', error.error.message);
         },
       });
     }
