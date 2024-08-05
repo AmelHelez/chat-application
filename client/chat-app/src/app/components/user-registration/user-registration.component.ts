@@ -11,12 +11,12 @@ import {
 import { Router } from '@angular/router';
 import { User } from 'src/app/models/user';
 import { AuthService } from 'src/app/services/auth.service';
-import { MatSnackBar } from '@angular/material/snack-bar';
+import { NotifierService } from 'angular-notifier';
 
 @Component({
   selector: 'app-user-registration',
   templateUrl: './user-registration.component.html',
-  styleUrls: ['./user-registration.component.scss'],
+  styleUrls: ['../form.scss'],
 })
 export class UserRegistrationComponent implements OnInit {
   registerForm = new FormGroup({
@@ -29,7 +29,7 @@ export class UserRegistrationComponent implements OnInit {
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
-    private snackBar: MatSnackBar
+    private readonly notifier: NotifierService
   ) {}
 
   ngOnInit(): void {
@@ -64,11 +64,14 @@ export class UserRegistrationComponent implements OnInit {
       let userData = new User();
       userData.username = this.registerForm.value.username;
       userData.password = this.registerForm.value.password;
-      this.authService.register(userData).subscribe((response) => {
-        this.snackBar.open(response.message, 'Close', {
-          duration: 3000,
-        });
-        this.router.navigate(['/login']);
+      this.authService.register(userData).subscribe({
+        next: (response) => {
+          this.notifier.notify('success', response.message);
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          this.notifier.notify('error', error.error.message);
+        }
       });
     }
   }
