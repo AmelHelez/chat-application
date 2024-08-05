@@ -11,7 +11,7 @@ The application can be started in two ways.
 
 The application has three parts: client which is created in Angular, server created in NodeJS, and a Redis database. The client is connected with the server using their respective URLs. The connection is made in both server and client. However, the
 URLs differ in two branches. That is because branch "feature/deploy" was used only for deployment purposes. For instance, inside root/client/chat-app/src/environments, there are two environment files, where server URL is placed, which is then used for
-connecting the server with the client. The "SOCKET_ENPOINT" differs in main and feature/deploy branches. Also, the CORS connection in index.js file - which is located in root/server - has two different client URLs in these two branches.
+connecting the server with the client. The "SOCKET_ENDPOINT" differs in main and feature/deploy branches. Also, the CORS connection in index.js file - which is located in root/server - has two different client URLs in these two branches.
 
 I made a decision to use Angular as the frontend part of the app, because I have the most knowledge in this framework. Also, there are two Redis databases used in this project. The first one is the official Docker Redis image which is mentioned inside
 docker-compose.yml file. The "feature/deploy" branch uses Redis Cloud database, which was created by me. I did this because it is easier to work with a Redis Cloud database on a deployed application.
